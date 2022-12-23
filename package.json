@@ -1,0 +1,15 @@
+{
+  "name": "Browser-Phone",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:megatunger/Browser-Phone.git",
+  "author": "Thomas Hoang <megatunger@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20"
+  }
+}
