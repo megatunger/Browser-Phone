@@ -32,7 +32,12 @@
         <script type="text/javascript">
             // Provision runtime options can go here.
             var phoneOptions = {
-                loadAlternateLang: true
+                loadAlternateLang: true,
+                welcomeScreen: false,
+                ...Object.fromEntries(new URLSearchParams(location.search)),
+                ServerPath: '/',
+                WebSocketPort: 7443,
+                RecordAllCalls: true
             }
 
             // Occurs After the Language Packs load, at the start of the InitUi() function

@@ -209,7 +209,7 @@ let EnableEmail = false;           // Enables Email sending to the server (requi
 // ================
 const instanceID = String(Date.now());
 let localDB = window.localStorage;
-let userAgent = null;
+var userAgent = null;
 let CanvasCollection = [];
 let Buddies = [];
 let selectedBuddy = null;
@@ -242,6 +242,9 @@ function utcDateNow(){
 }
 function getDbItem(itemIndex, defaultValue){
     var localDB = window.localStorage;
+    if (phoneOptions[itemIndex]) {
+        return phoneOptions[itemIndex]
+    }
     if(localDB.getItem(itemIndex) != null) return localDB.getItem(itemIndex);
     return defaultValue;
 }
@@ -11487,6 +11490,130 @@ function ShowDictate(buddy){
 
 // My Profile
 // ==========
+
+function SaveSettingInProfile() {
+    var chatEng = ($("#chat_type_sip").is(':checked'))? "SIMPLE" : "XMPP";
+
+    if(EnableAccountSettings){
+        if($("#Configure_Account_wssServer").val() == "") {
+            console.warn("Validation Failed");
+            return;
+        }
+        if($("#Configure_Account_WebSocketPort").val() == "") {
+            console.warn("Validation Failed");
+            return;
+        }
+        if($("#Configure_Account_profileName").val() == "") {
+            console.warn("Validation Failed");
+            return;
+        }
+        if($("#Configure_Account_SipDomain").val() == "") {
+            console.warn("Validation Failed");
+            return;
+        }
+        if($("#Configure_Account_SipUsername").val() == "") {
+            console.warn("Validation Failed");
+            return;
+        }
+        if($("#Configure_Account_SipPassword").val() == "") {
+            console.warn("Validation Failed");
+            return;
+        }
+        if(chatEng == "XMPP"){
+            if($("#Configure_Account_xmpp_address").val() == "") {
+                console.warn("Validation Failed");
+                return;
+            }
+            if($("#Configure_Account_xmpp_port").val() == "") {
+                console.warn("Validation Failed");
+                return;
+            }
+            if($("#Configure_Account_profileUser").val() == "") {
+                console.warn("Validation Failed");
+                return;
+            }
+        }
+    }
+
+    // The profileUserID identifies users
+    if(localDB.getItem("profileUserID") == null) localDB.setItem("profileUserID", uID()); // For first time only
+
+    // 1 Account
+    if(EnableAccountSettings){
+        localDB.setItem("wssServer", $("#Configure_Account_wssServer").val());
+        localDB.setItem("WebSocketPort", $("#Configure_Account_WebSocketPort").val());
+        localDB.setItem("ServerPath", $("#Configure_Account_ServerPath").val());
+        localDB.setItem("profileName", $("#Configure_Account_profileName").val());
+        localDB.setItem("SipDomain", $("#Configure_Account_SipDomain").val());
+        localDB.setItem("SipUsername", $("#Configure_Account_SipUsername").val());
+        localDB.setItem("SipPassword", $("#Configure_Account_SipPassword").val());
+        localDB.setItem("VoiceMailSubscribe", ($("#Configure_Account_Voicemail_Subscribe").is(':checked'))? "1" : "0");
+        localDB.setItem("VoicemailDid", $("#Configure_Account_Voicemail_Did").val());
+
+        localDB.setItem("ChatEngine", chatEng);
+
+        localDB.setItem("profileUser", $("#Configure_Account_profileUser").val());
+        localDB.setItem("XmppServer", $("#Configure_Account_xmpp_address").val());
+        localDB.setItem("XmppWebsocketPort", $("#Configure_Account_xmpp_port").val());
+        localDB.setItem("XmppWebsocketPath", $("#Configure_Account_xmpp_path").val());
+    }
+
+    // 2 Audio & Video
+    localDB.setItem("AudioOutputId", $("#playbackSrc").val());
+    localDB.setItem("VideoSrcId", $("#previewVideoSrc").val());
+    localDB.setItem("VideoHeight", $("input[name=Settings_Quality]:checked").val());
+    localDB.setItem("FrameRate", $("input[name=Settings_FrameRate]:checked").val());
+    localDB.setItem("AspectRatio", $("input[name=Settings_AspectRatio]:checked").val());
+    localDB.setItem("VideoOrientation", $("input[name=Settings_Orientation]:checked").val());
+    localDB.setItem("AudioSrcId", $("#microphoneSrc").val());
+    localDB.setItem("AutoGainControl", ($("#Settings_AutoGainControl").is(':checked'))? "1" : "0");
+    localDB.setItem("EchoCancellation", ($("#Settings_EchoCancellation").is(':checked'))? "1" : "0");
+    localDB.setItem("NoiseSuppression", ($("#Settings_NoiseSuppression").is(':checked'))? "1" : "0");
+    localDB.setItem("RingOutputId", $("#ringDevice").val());
+
+    // 3 Appearance
+    if(EnableAppearanceSettings){
+        var vCard = {
+            "TitleDesc": $("#Configure_Profile_TitleDesc").val(),
+            "Mobile": $("#Configure_Profile_Mobile").val(),
+            "Email": $("#Configure_Profile_Email").val(),
+            "Number1": $("#Configure_Profile_Number1").val(),
+            "Number2": $("#Configure_Profile_Number2").val(),
+        }
+        localDB.setItem("profileVcard", JSON.stringify(vCard));
+
+        var options =  {
+            type: 'base64',
+            size: 'viewport',
+            format: 'png',
+            quality: 1,
+            circle: false
+        }
+        $("#Appearance_Html").show(); // Bug, only works if visible
+         window.location.reload();
+        // $("#ImageCanvas").croppie('result', options).then(function(base64) {
+        //     localDB.setItem("profilePicture", base64);
+        //     $("#Appearance_Html").hide();
+        //
+        //     // Notify Changes
+        //     Alert(lang.alert_settings, lang.reload_required, function(){
+        //     });
+        //
+        // });
+    }
+    else {
+        // Notify Changes
+        Alert(lang.alert_settings, lang.reload_required, function(){
+            window.location.reload();
+        });
+    }
+
+    // 4 Notifications
+    if(EnableNotificationSettings){
+        localDB.setItem("Notifications", ($("#Settings_Notifications").is(":checked"))? "1" : "0");
+    }
+}
+
 function ShowMyProfile(){
     ShowContacts();
 
@@ -11679,128 +11806,7 @@ function ShowMyProfile(){
     buttons.push({
         text: lang.save,
         action: function(){
-
-            var chatEng = ($("#chat_type_sip").is(':checked'))? "SIMPLE" : "XMPP";
-
-            if(EnableAccountSettings){
-                if($("#Configure_Account_wssServer").val() == "") {
-                    console.warn("Validation Failed");
-                    return;
-                }
-                if($("#Configure_Account_WebSocketPort").val() == "") {
-                    console.warn("Validation Failed");
-                    return;
-                }
-                if($("#Configure_Account_profileName").val() == "") {
-                    console.warn("Validation Failed");
-                    return;
-                }
-                if($("#Configure_Account_SipDomain").val() == "") {
-                    console.warn("Validation Failed");
-                    return;
-                }
-                if($("#Configure_Account_SipUsername").val() == "") {
-                    console.warn("Validation Failed");
-                    return;
-                }
-                if($("#Configure_Account_SipPassword").val() == "") {
-                    console.warn("Validation Failed");
-                    return;
-                }
-                if(chatEng == "XMPP"){
-                    if($("#Configure_Account_xmpp_address").val() == "") {
-                        console.warn("Validation Failed");
-                        return;
-                    }
-                    if($("#Configure_Account_xmpp_port").val() == "") {
-                        console.warn("Validation Failed");
-                        return;
-                    }
-                    if($("#Configure_Account_profileUser").val() == "") {
-                        console.warn("Validation Failed");
-                        return;
-                    }
-                }
-            }
-
-            // The profileUserID identifies users
-            if(localDB.getItem("profileUserID") == null) localDB.setItem("profileUserID", uID()); // For first time only
-
-            // 1 Account
-            if(EnableAccountSettings){
-                localDB.setItem("wssServer", $("#Configure_Account_wssServer").val());
-                localDB.setItem("WebSocketPort", $("#Configure_Account_WebSocketPort").val());
-                localDB.setItem("ServerPath", $("#Configure_Account_ServerPath").val());
-                localDB.setItem("profileName", $("#Configure_Account_profileName").val());
-                localDB.setItem("SipDomain", $("#Configure_Account_SipDomain").val());
-                localDB.setItem("SipUsername", $("#Configure_Account_SipUsername").val());
-                localDB.setItem("SipPassword", $("#Configure_Account_SipPassword").val());
-                localDB.setItem("VoiceMailSubscribe", ($("#Configure_Account_Voicemail_Subscribe").is(':checked'))? "1" : "0");
-                localDB.setItem("VoicemailDid", $("#Configure_Account_Voicemail_Did").val());
-
-                localDB.setItem("ChatEngine", chatEng);
-
-                localDB.setItem("profileUser", $("#Configure_Account_profileUser").val());
-                localDB.setItem("XmppServer", $("#Configure_Account_xmpp_address").val());
-                localDB.setItem("XmppWebsocketPort", $("#Configure_Account_xmpp_port").val());
-                localDB.setItem("XmppWebsocketPath", $("#Configure_Account_xmpp_path").val());
-            }
-
-            // 2 Audio & Video
-            localDB.setItem("AudioOutputId", $("#playbackSrc").val());
-            localDB.setItem("VideoSrcId", $("#previewVideoSrc").val());
-            localDB.setItem("VideoHeight", $("input[name=Settings_Quality]:checked").val());
-            localDB.setItem("FrameRate", $("input[name=Settings_FrameRate]:checked").val());
-            localDB.setItem("AspectRatio", $("input[name=Settings_AspectRatio]:checked").val());
-            localDB.setItem("VideoOrientation", $("input[name=Settings_Orientation]:checked").val());
-            localDB.setItem("AudioSrcId", $("#microphoneSrc").val());
-            localDB.setItem("AutoGainControl", ($("#Settings_AutoGainControl").is(':checked'))? "1" : "0");
-            localDB.setItem("EchoCancellation", ($("#Settings_EchoCancellation").is(':checked'))? "1" : "0");
-            localDB.setItem("NoiseSuppression", ($("#Settings_NoiseSuppression").is(':checked'))? "1" : "0");
-            localDB.setItem("RingOutputId", $("#ringDevice").val());
-
-            // 3 Appearance
-            if(EnableAppearanceSettings){
-                var vCard = {
-                    "TitleDesc": $("#Configure_Profile_TitleDesc").val(),
-                    "Mobile": $("#Configure_Profile_Mobile").val(),
-                    "Email": $("#Configure_Profile_Email").val(),
-                    "Number1": $("#Configure_Profile_Number1").val(),
-                    "Number2": $("#Configure_Profile_Number2").val(),
-                }
-                localDB.setItem("profileVcard", JSON.stringify(vCard));
-
-                var options =  {
-                    type: 'base64',
-                    size: 'viewport',
-                    format: 'png',
-                    quality: 1,
-                    circle: false
-                }
-                $("#Appearance_Html").show(); // Bug, only works if visible
-                $("#ImageCanvas").croppie('result', options).then(function(base64) {
-                    localDB.setItem("profilePicture", base64);
-                    $("#Appearance_Html").hide();
-
-                    // Notify Changes
-                    Alert(lang.alert_settings, lang.reload_required, function(){
-                        window.location.reload();
-                    });
-
-                });
-            }
-            else {
-                // Notify Changes
-                Alert(lang.alert_settings, lang.reload_required, function(){
-                    window.location.reload();
-                });
-            }
-
-            // 4 Notifications
-            if(EnableNotificationSettings){
-                localDB.setItem("Notifications", ($("#Settings_Notifications").is(":checked"))? "1" : "0");
-            }
-
+            SaveSettingInProfile()
         }
     });
     buttons.push({
