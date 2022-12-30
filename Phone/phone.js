@@ -1395,7 +1395,7 @@ function InitUi(){
     // User
     leftHTML += " <span id=UserCallID></span>"
     leftHTML += "</div>"; // class=contactNameText
-    leftHTML += "<div class=presenceText><span id=regStatus>&nbsp;</span> <span id=dndStatus></span></div>";
+    leftHTML += "<div class=presenceText><span id='regStatus'>&nbsp;</span> <span id=dndStatus></span></div>";
     leftHTML += "</div>";  //id=UserProfile
 
     leftHTML += "</div>"; //  class=profileContainer
