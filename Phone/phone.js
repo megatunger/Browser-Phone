@@ -14027,8 +14027,8 @@ function DetectDevices(){
                 SpeakerDevices.push(deviceInfos[i]);
             }
             else if (deviceInfos[i].kind === "videoinput") {
-                HasVideoDevice = true;
-                VideoinputDevices.push(deviceInfos[i]);
+                // HasVideoDevice = true;
+                // VideoinputDevices.push(deviceInfos[i]);
             }
         }
         // console.log(AudioinputDevices, VideoinputDevices);
