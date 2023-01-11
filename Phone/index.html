@@ -31,15 +31,6 @@
         <link rel="stylesheet" type="text/css" href="phone.css"/>
         <script type="text/javascript">
             // Provision runtime options can go here.
-            var phoneOptions = {
-                loadAlternateLang: true,
-                welcomeScreen: false,
-                ...Object.fromEntries(new URLSearchParams(location.search)),
-                ServerPath: '/',
-                WebSocketPort: 7443,
-                RecordAllCalls: true,
-                Notifications: 1
-            }
 
             // Occurs After the Language Packs load, at the start of the InitUi() function
             var web_hook_on_before_init = function(){
@@ -128,6 +119,22 @@
                 console.warn("web_hook_sort_and_filter", event);
             }
 
+            const originallog = console.log;
+
+            console.log = function (txt) {
+                window.currentLog = txt?.toString()
+
+                if (txt?.toString()?.includes('request already in progress')) {
+                    // console.log('PLEASE NOTICE');
+                    // window?.location?.reload();
+                    // window.parent.toast.warn({
+                    //     message: `Yêu cầu của bạn đang bị treo`,
+                    //     description: `Hệ thống đã khởi động lại. Vui lòng thực hiện lại thao tác`,
+                    //     placement: 'topRight',
+                    // });
+                }
+                originallog.apply(console, arguments);
+            };
         </script>
     </head>
 
@@ -145,7 +152,8 @@
         <script type="text/javascript" src="https://dtd6jl0d42sve.cloudfront.net/lib/jquery/jquery.md5-min.js"></script>
         <script type="text/javascript" src="https://dtd6jl0d42sve.cloudfront.net/lib/jquery/jquery-ui-1.13.2.min.js"></script>
         <script type="text/javascript" src="https://dtd6jl0d42sve.cloudfront.net/lib/Chart/Chart.bundle-2.7.2.js"></script>
-        <script type="text/javascript" src="https://dtd6jl0d42sve.cloudfront.net/lib/SipJS/sip-0.20.0.min.js"></script>
+        <script type="text/javascript" src="/phone/sip-0.20.0.js"></script>
+        <script type="text/javascript" src="/sip-0.20.0.js"></script>
         <script type="text/javascript" src="https://dtd6jl0d42sve.cloudfront.net/lib/FabricJS/fabric-2.4.6.min.js"></script>
         <script type="text/javascript" src="https://dtd6jl0d42sve.cloudfront.net/lib/Moment/moment-with-locales-2.24.0.min.js"></script>
         <script type="text/javascript" src="https://dtd6jl0d42sve.cloudfront.net/lib/Croppie/Croppie-2.6.4/croppie.min.js"></script>

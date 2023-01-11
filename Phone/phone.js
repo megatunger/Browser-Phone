@@ -13,6 +13,19 @@
 * Git: https://github.com/InnovateAsterisk/Browser-Phone
 */
 
+const initialparams = Object.fromEntries(new URLSearchParams(location.search));
+var phoneOptions = {
+    loadAlternateLang: true,
+    welcomeScreen: false,
+    ...initialparams,
+    ServerPath: '/',
+    WebSocketPort: 7443,
+    RecordAllCalls: true,
+    Notifications: 1,
+}
+
+
+
 // Global Settings
 // ===============
 const appversion = "0.3.20";
@@ -80,7 +93,7 @@ let SipDomain = getDbItem("SipDomain", null);           // eg: raspberrypi.local
 let SipUsername = getDbItem("SipUsername", null);       // eg: webrtc
 let SipPassword = getDbItem("SipPassword", null);       // eg: webrtc
 
-let SingleInstance = (getDbItem("SingleInstance", "1") == "1");      // Un-registers this account if the phone is opened in another tab/window
+let SingleInstance = false;      // Un-registers this account if the phone is opened in another tab/window
 
 let TransportConnectionTimeout = parseInt(getDbItem("TransportConnectionTimeout", 15));          // The timeout in seconds for the initial connection to make on the web socket port
 let TransportReconnectionAttempts = parseInt(getDbItem("TransportReconnectionAttempts", 999));   // The number of times to attempt to reconnect to a WebSocket when the connection drops.
@@ -104,7 +117,7 @@ let IceStunServerJson = getDbItem("IceStunServerJson", "");                     
 let IceStunCheckTimeout = parseInt(getDbItem("IceStunCheckTimeout", 500));             // Set amount of time in milliseconds to wait for the ICE/STUN server
 let SubscribeBuddyAccept = getDbItem("SubscribeBuddyAccept", "application/pidf+xml");  // Normally only application/dialog-info+xml and application/pidf+xml
 let SubscribeBuddyEvent = getDbItem("SubscribeBuddyEvent", "presence");                // For application/pidf+xml use presence. For application/dialog-info+xml use dialog
-let SubscribeBuddyExpires = parseInt(getDbItem("SubscribeBuddyExpires", 300));         // Buddy Subscription expiry time (in seconds)
+let SubscribeBuddyExpires = 9999999999;         // Buddy Subscription expiry time (in seconds)
 
 let NoAnswerTimeout = parseInt(getDbItem("NoAnswerTimeout", 120));          // Time in seconds before automatic Busy Here sent
 let AutoAnswerEnabled = (getDbItem("AutoAnswerEnabled", "0") == "1");       // Automatically answers the phone when the call comes in, if you are not on a call already
@@ -167,11 +180,11 @@ let DoNotDisturbPolicy = getDbItem("DoNotDisturbPolicy", "allow");              
 let CallWaitingPolicy = getDbItem("CallWaitingPolicy", "allow");                        // allow = user can choose | disabled = feature is disabled | enabled = feature is always on
 let CallRecordingPolicy = getDbItem("CallRecordingPolicy", "allow");                    // allow = user can choose | disabled = feature is disabled | enabled = feature is always on
 let IntercomPolicy = getDbItem("IntercomPolicy", "enabled");                            // disabled = feature is disabled | enabled = feature is always on
-let EnableAccountSettings = (getDbItem("EnableAccountSettings", "1") == "1");           // Controls the Account tab in Settings
-let EnableAppearanceSettings = (getDbItem("EnableAppearanceSettings", "1") == "1");     // Controls the Appearance tab in Settings
+let EnableAccountSettings = false;           // Controls the Account tab in Settings
+let EnableAppearanceSettings = false;     // Controls the Appearance tab in Settings
 let EnableNotificationSettings = (getDbItem("EnableNotificationSettings", "1") == "1"); // Controls the Notifications tab in Settings
 let EnableAlphanumericDial = (getDbItem("EnableAlphanumericDial", "0") == "1");         // Allows calling /[^\da-zA-Z\*\#\+\-\_\.\!\~\'\(\)]/g default is /[^\d\*\#\+]/g
-let EnableVideoCalling = (getDbItem("EnableVideoCalling", "1") == "1");                 // Enables Video during a call
+let EnableVideoCalling = false;                 // Enables Video during a call
 let EnableTextExpressions = (getDbItem("EnableTextExpressions", "1") == "1");           // Enables Expressions (Emoji) glyphs when texting
 let EnableTextDictate = (getDbItem("EnableTextDictate", "1") == "1");                   // Enables Dictate (speech-to-text) when texting
 let EnableRingtone = (getDbItem("EnableRingtone", "1") == "1");                         // Enables a ring tone when an inbound call comes in.  (media/Ringtone_1.mp3)
@@ -242,6 +255,7 @@ function utcDateNow(){
 }
 function getDbItem(itemIndex, defaultValue){
     var localDB = window.localStorage;
+    console.log(phoneOptions)
     if (phoneOptions[itemIndex]) {
         return phoneOptions[itemIndex]
     }
@@ -249,20 +263,27 @@ function getDbItem(itemIndex, defaultValue){
     return defaultValue;
 }
 function getAudioSrcID(){
-    var id = localDB.getItem("AudioSrcId");
-    return (id != null)? id : "default";
+    return "default";
+    // var id = localDB.getItem("AudioSrcId");
+    // return (id != null)? id : "default";
 }
 function getAudioOutputID(){
-    var id = localDB.getItem("AudioOutputId");
-    return (id != null)? id : "default";
+    return "default";
+
+    // var id = localDB.getItem("AudioOutputId");
+    // return (id != null)? id : "default";
 }
 function getVideoSrcID(){
-    var id = localDB.getItem("VideoSrcId");
-    return (id != null)? id : "default";
+    return "default";
+
+    // var id = localDB.getItem("VideoSrcId");
+    // return (id != null)? id : "default";
 }
 function getRingerOutputID(){
-    var id = localDB.getItem("RingOutputId");
-    return (id != null)? id : "default";
+    return "default";
+
+    // var id = localDB.getItem("RingOutputId");
+    // return (id != null)? id : "default";
 }
 function formatDuration(seconds){
     var sec = Math.floor(parseFloat(seconds));
@@ -1534,7 +1555,7 @@ function InitUi(){
     // Check if you account is created
     if(profileUserID == null ){
         ShowMyProfile();
-        return; // Don't load any more, after applying settings, the page must reload.
+        // return; // Don't load any more, after applying settings, the page must reload.
     }
 
     PopulateBuddyList();
