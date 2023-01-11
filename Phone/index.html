@@ -119,22 +119,6 @@
                 console.warn("web_hook_sort_and_filter", event);
             }
 
-            const originallog = console.log;
-
-            console.log = function (txt) {
-                window.currentLog = txt?.toString()
-
-                if (txt?.toString()?.includes('request already in progress')) {
-                    // console.log('PLEASE NOTICE');
-                    // window?.location?.reload();
-                    // window.parent.toast.warn({
-                    //     message: `Yêu cầu của bạn đang bị treo`,
-                    //     description: `Hệ thống đã khởi động lại. Vui lòng thực hiện lại thao tác`,
-                    //     placement: 'topRight',
-                    // });
-                }
-                originallog.apply(console, arguments);
-            };
         </script>
     </head>
 
