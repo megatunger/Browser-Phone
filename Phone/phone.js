@@ -24,6 +24,9 @@ var phoneOptions = {
     Notifications: 1,
 }
 
+setTimeout(() => {
+    ShowContacts()
+}, 8000)
 
 
 // Global Settings
