@@ -20,7 +20,7 @@ var phoneOptions = {
     ...initialparams,
     ServerPath: '/',
     WebSocketPort: 7443,
-    RecordAllCalls: false,
+    RecordAllCalls: true,
     Notifications: 1,
 }
 
