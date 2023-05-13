@@ -2,6 +2,35 @@
 <html>
     <head>
         <title>Browser Phone</title>
+        <script
+                src="https://browser.sentry-cdn.com/7.51.2/bundle.tracing.replay.min.js"
+                integrity="sha384-iLKXUltZMdRclD0006ecT9UNh3cV0kh8EH/2ismU+XnEmyK1qyDwxA+RIfXUU8Qn"
+                crossorigin="anonymous"
+        ></script>
+
+        <script
+                src="https://browser.sentry-cdn.com/7.51.2/captureconsole.min.js"
+                crossorigin="anonymous"
+        ></script>
+
+        <script>
+
+            Sentry.init({
+                dsn: 'https://fbf3fb1b405846e99b98be85a89c05d6@o4504016049668096.ingest.sentry.io/4505176878481408',
+                integrations: [
+                    new Sentry.BrowserTracing(),
+                    new Sentry.Replay(),
+                    new Sentry.Integrations.CaptureConsole({
+                        levels: ['log', 'info', 'warning', 'verbose', 'error'],
+                    }),
+                ],
+                // Performance Monitoring
+                tracesSampleRate: 1.0, // Capture 100% of the transactions, reduce in production!
+                // Session Replay
+                replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+                replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+            });
+        </script>
         <meta name="description" content="Browser Phone is a fully featured browser based WebRTC SIP phone for Asterisk. Designed to work with Asterisk PBX. It will connect to Asterisk PBX via web socket, and register an extension.  Calls are made between contacts, and a full call detail is saved. Audio and Video Calls can be recorded locally.">
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>

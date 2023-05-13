@@ -258,7 +258,6 @@ function utcDateNow(){
 }
 function getDbItem(itemIndex, defaultValue){
     var localDB = window.localStorage;
-    console.log(phoneOptions)
     if (phoneOptions[itemIndex]) {
         return phoneOptions[itemIndex]
     }
