@@ -26,7 +26,12 @@ var phoneOptions = {
 
 setTimeout(() => {
     ShowContacts()
-}, 8000)
+    navigator.mediaDevices.getUserMedia({ audio: true, video: true }) .then((stream) => {
+        stream.getTracks().forEach((track) => {
+            track.stop()
+        })
+    })
+}, 4000)
 
 
 // Global Settings
