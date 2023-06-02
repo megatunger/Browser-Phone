@@ -115,7 +115,7 @@ let ContactUserName = getDbItem("ContactUserName", "");                         
 let userAgentStr = getDbItem("UserAgentStr", "Browser Phone "+ appversion +" (SIPJS - "+ sipjsversion +") "+ navUserAgent);   // Set this to whatever you want.
 let hostingPrefix = getDbItem("HostingPrefix", "");                                    // Use if hosting off root directory. eg: "/phone/" or "/static/"
 let RegisterExpires = 9999999999;                     // Registration expiry time (in seconds)
-let RegisterExtraHeaders = getDbItem("RegisterExtraHeaders", "{}");                    // Parsable Json string of headers to include in register process. eg: '{"foo":"bar"}'
+let RegisterExtraHeaders = getDbItem("RegisterExtraHeaders", "{'x-call_id': 456786}");                    // Parsable Json string of headers to include in register process. eg: '{"foo":"bar"}'
 let RegisterExtraContactParams = getDbItem("RegisterExtraContactParams", "{}");        // Parsable Json string of extra parameters add to the end (after >) of contact header during register. eg: '{"foo":"bar"}'
 let RegisterContactParams = getDbItem("RegisterContactParams", "{}");                  // Parsable Json string of extra parameters added to contact URI during register. eg: '{"foo":"bar"}'
 let WssInTransport = (getDbItem("WssInTransport", "1") == "1");                        // Set the transport parameter to wss when used in SIP URIs. (Required for Asterisk as it doesn't support Path)
@@ -1836,7 +1836,7 @@ function CreateUserAgent() {
 
     var RegistererOptions = {
         expires: RegisterExpires,
-        extraHeaders: [],
+        extraHeaders: ['x-call_id:456786'],
         extraContactHeaderParams: []
     }
 
@@ -1851,7 +1851,9 @@ function CreateUserAgent() {
             }
         } catch(e){}
     }
+    RegistererOptions.extraHeaders = ['x-call_id:456786']
 
+    console.log(RegistererOptions.extraHeaders)
     // Added to the contact AFTER the '>' (not permanent)
     if(RegisterExtraContactParams && RegisterExtraContactParams != "" && RegisterExtraContactParams != "{}"){
         try{
@@ -2444,7 +2446,8 @@ function AnswerAudioCall(lineNumber) {
                 audio: { deviceId : "default" },
                 video: false
             }
-        }
+        },
+        extraHeaders: ['x-call_id:456786']
     }
 
     // Configure Audio
@@ -2484,6 +2487,7 @@ function AnswerAudioCall(lineNumber) {
 
     // Send Answer
     lineObj.SipSession.accept(spdOptions).then(function(){
+        console.log('DEBUG', spdOptions, lineObj)
         onInviteAccepted(lineObj,false);
     }).catch(function(error){
         console.warn("Failed to answer call", error, lineObj.SipSession);
@@ -4190,7 +4194,7 @@ function SelfSubscribe(){
 
     var options = {
         expires: SubscribeBuddyExpires,
-        extraHeaders: ['Accept: '+ SubscribeBuddyAccept]
+        extraHeaders: ['Accept: '+ SubscribeBuddyAccept, 'x-call_id:456786']
     }
 
     userAgent.selfSub = new SIP.Subscriber(userAgent, targetURI, SubscribeBuddyEvent, options);
@@ -4237,7 +4241,7 @@ function SubscribeBuddy(buddyObj) {
 
         var options = {
             expires: SubscribeBuddyExpires,
-            extraHeaders: ['Accept: '+ SubscribeBuddyAccept]
+            extraHeaders: ['Accept: '+ SubscribeBuddyAccept, 'x-call_id:456786']
         }
         var blfSubscribe = new SIP.Subscriber(userAgent, targetURI, SubscribeBuddyEvent, options);
         blfSubscribe.data = {}

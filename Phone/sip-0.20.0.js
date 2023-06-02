@@ -1,5 +1,5 @@
 /*!
- * 
+ *
  *  SIP version 0.20.0
  *  Copyright (c) 2014-2021 Junction Networks, Inc <http://www.onsip.com>
  *  Homepage: https://sipjs.com
@@ -1010,7 +1010,10 @@ class Invitation extends _session__WEBPACK_IMPORTED_MODULE_0__.Session {
             return this.waitForArrivalOfPrack()
                 .then(() => clearTimeout(this.userNoAnswerTimer)) // Ported
                 .then(() => this.generateResponseOfferAnswer(this.incomingInviteRequest, responseOptions))
-                .then((body) => this.incomingInviteRequest.accept({ statusCode: 200, body, extraHeaders }));
+                .then((body) => {
+                    console.log('LIBRARY', statusCode: 200, body, extraHeaders)
+                    return this.incomingInviteRequest.accept({statusCode: 200, body, extraHeaders});
+                });
         }
         clearTimeout(this.userNoAnswerTimer); // Ported
         return this.generateResponseOfferAnswer(this.incomingInviteRequest, responseOptions).then((body) => this.incomingInviteRequest.accept({ statusCode: 200, body, extraHeaders }));
@@ -18496,7 +18499,7 @@ var Parser;
         return end;
     }
     Parser.getHeader = getHeader;
-    function parseHeader(message, 
+    function parseHeader(message,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data, headerStart, headerEnd) {
         const hcolonIndex = data.indexOf(":", headerStart);
@@ -20433,7 +20436,7 @@ __webpack_require__.r(__webpack_exports__);
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/ 	
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -20447,14 +20450,14 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/ 	
+/******/
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/ 	
+/******/
 /************************************************************************/
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
@@ -20467,12 +20470,12 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 			}
 /******/ 		};
 /******/ 	})();
-/******/ 	
+/******/
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
-/******/ 	
+/******/
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -20483,7 +20486,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
 /******/ 	})();
-/******/ 	
+/******/
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
