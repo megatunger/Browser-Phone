@@ -1011,7 +1011,7 @@ class Invitation extends _session__WEBPACK_IMPORTED_MODULE_0__.Session {
                 .then(() => clearTimeout(this.userNoAnswerTimer)) // Ported
                 .then(() => this.generateResponseOfferAnswer(this.incomingInviteRequest, responseOptions))
                 .then((body) => {
-                    console.log('LIBRARY', statusCode: 200, body, extraHeaders)
+                    console.log('LIBRARY', statusCode, body, extraHeaders)
                     return this.incomingInviteRequest.accept({statusCode: 200, body, extraHeaders});
                 });
         }
