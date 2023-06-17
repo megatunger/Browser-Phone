@@ -3074,7 +3074,6 @@ function onTrackAddedEvent(lineObj, includeVideo){
         var receiver = transceiver.receiver;
         if(receiver.track){
             if(receiver.track.kind == "audio"){
-                let tcvr = transceiver;
                 let codecs = RTCRtpReceiver.getCapabilities('audio').codecs;
                 console.log('codecs', codecs)
                 let opus_codecs = [];
@@ -3088,10 +3087,10 @@ function onTrackAddedEvent(lineObj, includeVideo){
                 }
 
 // currently not all browsers support setCodecPreferences
-                if(tcvr.setCodecPreferences != undefined)
+                if(transceiver.setCodecPreferences != undefined)
                 {
                     console.log('setCodecPreferences', opus_codecs)
-                    tcvr.setCodecPreferences(opus_codecs);
+                    transceiver.setCodecPreferences(opus_codecs);
                 }
 
 
@@ -5660,7 +5659,20 @@ function AudioCall(lineObj, dialledNumber, extraHeaders) {
                 audio: { deviceId : "default" },
                 video: false
             }
-        }
+        },
+        sessionDescriptionHandlerModifiers: [
+            async (modifiers) => {
+                if (modifiers.sdp.includes("s=FreeSWITCH")) {
+                    modifiers.sdp = modifiers?.sdp?.replaceAll("a=rtpmap:9 G722/8000\n" +
+                        "a=rtpmap:126 telephone-event/8000\n" +
+                        "a=rtpmap:13 CN/8000", "a=rtpmap:111 opus/48000/2\n" +
+                        "a=rtcp-fb:111 transport-cc\n" +
+                        "a=fmtp:111 minptime=10;useinbandfec=1")
+                }
+                console.log('sessionDescriptionHandlerModifiers', modifiers)
+                return Promise.resolve(modifiers);
+            }
+        ]
     }
     // Configure Audio
     var currentAudioDevice = getAudioSrcID();
