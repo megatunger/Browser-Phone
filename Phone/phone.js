@@ -1946,6 +1946,9 @@ function onTransportDisconnected(){
     $("#regStatus").html(lang.disconnected_from_web_socket);
 
     userAgent.isReRegister = false;
+    if (window.parent && window.parent.error) {
+        window.parent.error('Mất kết nối đến tổng đài! Vui lòng kiểm tra đường truyền!', 10)
+    }
 }
 function ReconnectTransport(){
     if(userAgent == null) return;
