@@ -3073,30 +3073,6 @@ function onTrackAddedEvent(lineObj, includeVideo){
         // Add Media
         var receiver = transceiver.receiver;
         if(receiver.track){
-            if(receiver.track.kind == "audio"){
-                let codecs = RTCRtpReceiver.getCapabilities('audio').codecs;
-                console.log('codecs', codecs)
-                let opus_codecs = [];
-// iterate over supported codecs and pull out the codecs we want
-                for(let i = 0; i < codecs.length; i++)
-                {
-                    if(codecs[i].mimeType == "audio/opus")
-                    {
-                        opus_codecs .push(codecs[i]);
-                    }
-                }
-
-// currently not all browsers support setCodecPreferences
-                if(transceiver.setCodecPreferences != undefined)
-                {
-                    console.log('setCodecPreferences', opus_codecs)
-                    transceiver.setCodecPreferences(opus_codecs);
-                }
-
-
-                console.log("Adding Remote Audio Track");
-                remoteAudioStream.addTrack(receiver.track);
-            }
             if(includeVideo && receiver.track.kind == "video"){
                 if(transceiver.mid){
                     receiver.track.mid = transceiver.mid;
