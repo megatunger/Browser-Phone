@@ -5663,13 +5663,14 @@ function AudioCall(lineObj, dialledNumber, extraHeaders) {
         sessionDescriptionHandlerModifiers: [
             async (modifiers) => {
                 if (modifiers.sdp.includes("s=FreeSWITCH")) {
-                    modifiers.sdp = modifiers?.sdp?.replaceAll("a=rtpmap:9 G722/8000\n" +
-                        "a=rtpmap:126 telephone-event/8000\n" +
-                        "a=rtpmap:13 CN/8000", "a=rtpmap:111 opus/48000/2\n" +
-                        "a=rtcp-fb:111 transport-cc\n" +
-                        "a=fmtp:111 minptime=10;useinbandfec=1")
+                    // modifiers.sdp = modifiers?.sdp?.replaceAll("a=rtpmap:9 G722/8000\n" +
+                    //     "a=rtpmap:126 telephone-event/8000\n" +
+                    //     "a=rtpmap:13 CN/8000", "a=rtpmap:111 opus/48000/2\n" +
+                    //     "a=rtcp-fb:111 transport-cc\n" +
+                    //     "a=fmtp:111 minptime=10;useinbandfec=1")
                 }
-                console.log('sessionDescriptionHandlerModifiers', modifiers)
+                console.log('SDP Type: ', modifiers.type)
+                console.log('SDP Content: ', modifiers.sdp)
                 return Promise.resolve(modifiers);
             }
         ]
