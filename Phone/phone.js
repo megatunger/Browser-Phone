@@ -3073,6 +3073,10 @@ function onTrackAddedEvent(lineObj, includeVideo){
         // Add Media
         var receiver = transceiver.receiver;
         if(receiver.track){
+            if(receiver.track.kind == "audio"){
+                console.log("Adding Remote Audio Track");
+                remoteAudioStream.addTrack(receiver.track);
+            }
             if(includeVideo && receiver.track.kind == "video"){
                 if(transceiver.mid){
                     receiver.track.mid = transceiver.mid;
