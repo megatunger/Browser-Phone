@@ -1744,8 +1744,9 @@ function CreateUserAgent() {
     if(SipDomain==null || SipDomain=="" || SipDomain=="null" || SipDomain=="undefined") SipDomain = wssServer; // Sets globally
     var options = {
         uri: SIP.UserAgent.makeURI("sip:"+ SipUsername + "@" + SipDomain),
+        hackViaTcp: true,
         transportOptions: {
-            server: "wss://" + wssServer + ":"+ WebSocketPort +""+ ServerPath,
+            server: "wss://" + wssServer + ServerPath,
             traceSip: false,
             connectionTimeout: TransportConnectionTimeout
             // keepAliveInterval: 30 // Uncomment this and make this any number greater then 0 for keep alive...
