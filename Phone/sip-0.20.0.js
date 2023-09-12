@@ -5159,7 +5159,7 @@ class OutgoingRequestMessage {
     setViaHeader(branch, transport) {
         // FIXME: Hack
         if (this.options.hackViaTcp) {
-            transport = "TCP";
+            transport = "WS";
         }
         let via = "SIP/2.0/" + transport;
         via += " " + this.options.viaHost + ";branch=" + branch;
