@@ -17,6 +17,7 @@ const initialparams = Object.fromEntries(new URLSearchParams(location.search));
 var phoneOptions = {
     loadAlternateLang: true,
     welcomeScreen: false,
+    hackViaTcp: false,
     ...initialparams,
     ServerPath: '/',
     WebSocketPort: 7443,
@@ -1741,13 +1742,10 @@ function PreloadAudioFiles(){
 // =================
 function CreateUserAgent() {
     console.log("Creating User Agent...");
-    const isExclusivePartner =
-        window?.parent?.location?.href?.includes('https://callbot.ttsolutions.com.vn') ||
-        window?.location?.hostname?.includes('localhost');
     if(SipDomain==null || SipDomain=="" || SipDomain=="null" || SipDomain=="undefined") SipDomain = wssServer; // Sets globally
     var options = {
         uri: SIP.UserAgent.makeURI("sip:"+ SipUsername + "@" + SipDomain),
-        hackViaTcp: isExclusivePartner ? false : true,
+        hackViaTcp: phoneOptions.hackViaTcp,
         transportOptions: {
             server: "wss://" + wssServer + ServerPath,
             traceSip: false,
