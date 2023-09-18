@@ -1747,7 +1747,7 @@ function CreateUserAgent() {
     if(SipDomain==null || SipDomain=="" || SipDomain=="null" || SipDomain=="undefined") SipDomain = wssServer; // Sets globally
     var options = {
         uri: SIP.UserAgent.makeURI("sip:"+ SipUsername + "@" + SipDomain),
-        hackViaTcp: isExclusivePartner ? true : false,
+        hackViaTcp: isExclusivePartner ? false : true,
         transportOptions: {
             server: "wss://" + wssServer + ServerPath,
             traceSip: false,
