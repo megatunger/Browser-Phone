@@ -1741,10 +1741,13 @@ function PreloadAudioFiles(){
 // =================
 function CreateUserAgent() {
     console.log("Creating User Agent...");
+    const isExclusivePartner =
+        window?.parent?.location?.href?.includes('https://callbot.ttsolutions.com.vn') ||
+        window?.location?.hostname?.includes('localhost');
     if(SipDomain==null || SipDomain=="" || SipDomain=="null" || SipDomain=="undefined") SipDomain = wssServer; // Sets globally
     var options = {
         uri: SIP.UserAgent.makeURI("sip:"+ SipUsername + "@" + SipDomain),
-        hackViaTcp: true,
+        hackViaTcp: isExclusivePartner ? true : false,
         transportOptions: {
             server: "wss://" + wssServer + ServerPath,
             traceSip: false,
